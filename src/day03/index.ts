@@ -36,7 +36,7 @@ const checkForPart = (input: string[][]) => {
 const getDigits = (input: string[][], y: number, x: number) => {
   const row = input[y];
   let left = x;
-  while (left > 0 || row[left - 1] === ".") {
+  while (left > 0 && isDigit(row[left - 1])) {
     left--;
   }
   const len = getDigitLength(row.slice(left));
@@ -46,20 +46,26 @@ const getDigits = (input: string[][], y: number, x: number) => {
 const getTwoDigits = (fullInput: string[][], y: number, x: number) => {
   let totalDigits = [];
   let yStart = y === 0 ? 0 : y - 1;
-  let yEnd = y === fullInput.length - 1 ? fullInput.length - 1 : y + 2;
+  let yEnd = y === fullInput.length - 1 ? fullInput.length - 1 : y + 1;
   let xStart = x === 0 ? 0 : x - 1;
-  let xEnd = x === fullInput[0].length - 1 ? fullInput[0].length - 1 : x + 2;
-  console.log(fullInput.slice(yStart, yEnd))
+  let xEnd = x === fullInput[0].length - 1 ? fullInput[0].length - 1 : x + 1;
+
   for (let i = yStart; i <= yEnd; i++) {
     const col = fullInput[i];
     for (let j = xStart; j <= xEnd; j++) {
       const cell = col[j];
       if (isDigit(cell)) {
         const digits = getDigits(fullInput, i, j);
-        console.log(digits)
+        totalDigits.push({ digits, x, y });
       }
     }
   }
+  if (new Set(totalDigits.map((o) => JSON.stringify(o))).size === 2) {
+    const nums = Array.from(new Set(totalDigits.map((d) => d.digits)));
+
+    return nums[0] * nums[1];
+  }
+  return 0;
 };
 
 const parseInput = (rawInput: string) =>
@@ -93,12 +99,12 @@ const part2 = (rawInput: string) => {
     for (let j = 0; j < line.length; j++) {
       const cell = line[j];
       if (cell === "*") {
-        getTwoDigits(input, i, j);
+        total += getTwoDigits(input, i, j);
       }
     }
   }
 
-  return;
+  return total;
 };
 
 run({
@@ -139,5 +145,5 @@ run({
     solution: part2,
   },
   trimTestInputs: true,
-  onlyTests: true,
+  onlyTests: false,
 });
