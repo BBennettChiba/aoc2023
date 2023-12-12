@@ -1,6 +1,8 @@
 import run from "aocrunner";
 
-const parseInput = (rawInput: string, part: 1 | 2) => {
+function parseInput (rawInput: string, part:1): {time: number, distance: number}[]
+function parseInput (rawInput: string, part: 2): {time: number, distance: number}
+function parseInput  (rawInput: string, part: 1 | 2) {
   const input = rawInput.split("\n").map((l) => l.split(/\s+/).slice(1));
   const [times, distances] = input;
   if (part === 1) {
